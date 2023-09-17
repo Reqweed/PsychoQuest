@@ -9,4 +9,6 @@ public interface IRepositoryManager
     ITestAnswersRepository TestAnswers { get; }
     
     ITestQuestionsRepository TestQuestions { get; }
+    
+    IUserRepository User { get; }
 }
