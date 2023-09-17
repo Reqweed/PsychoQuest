@@ -23,7 +23,11 @@ public class PostgreDbContext : Microsoft.EntityFrameworkCore.DbContext
         modelBuilder.Entity<TestResults>()
             .Property(e => e.TestName)
             .HasConversion<string>();
+        modelBuilder.Entity<User>()
+            .Property(e => e.Gender)
+            .HasConversion<string>();
     }
     
+    public DbSet<User> Users { get; set; }
     public DbSet<TestResults> TestResults { get; set; }
 }
