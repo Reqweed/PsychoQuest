@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Entities.ErrorModel;
+using Entities.Exceptions.BadRequestException;
 using Entities.Exceptions.NotFoundException;
-using Entities.Exceptions.OutOfRangeException;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace PsychoQuest.Extensions;
@@ -21,7 +21,7 @@ public static class ExceptionMiddlewareExtensions
                 {
                     context.Response.StatusCode = contextFeature.Error switch
                     {
-                        OutOfRangeException => StatusCodes.Status400BadRequest,
+                        BadRequestException => StatusCodes.Status400BadRequest,
                         NotFoundException => StatusCodes.Status404NotFound,
                         _ => StatusCodes.Status500InternalServerError
                     };
