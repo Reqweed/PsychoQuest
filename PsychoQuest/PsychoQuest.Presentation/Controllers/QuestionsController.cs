@@ -1,18 +1,20 @@
 ﻿using Application.CommandsQueries.Question.Queries.GetTestQuestions;
 using Entities.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PsychoQuest.Presentation.Controllers;
 
-[ApiController]
+[Authorize]
 [Route("api/[controller]")]
-public class QuestionsController : ControllerBase
+public class QuestionsController : BaseController
 {
-    private readonly IMediator _mediator;
-
-    public QuestionsController(IMediator mediator) => _mediator = mediator;
-
+    
+    public QuestionsController(IMediator mediator) : base(mediator)
+    {
+    }
+    
     [HttpGet("{typeTest:TypeTest}")]
     public async Task<IActionResult> GetTestQuestions(TypeTest typeTest)
     {
@@ -21,7 +23,7 @@ public class QuestionsController : ControllerBase
             TypeTest = typeTest
         };
 
-        var questions = await _mediator.Send(getTestQuestionsQuery);
+        var questions = await Mediator.Send(getTestQuestionsQuery);
 
         return Ok(questions);
     }

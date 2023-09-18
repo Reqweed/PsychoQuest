@@ -4,28 +4,29 @@ using Application.CommandsQueries.Answer.Queries.GetAnswers;
 using Entities.Enums;
 using Entities.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PsychoQuest.Presentation.Controllers;
 
-[ApiController]
+[Authorize]
 [Route("api/[controller]")]
-public class AnswersController : ControllerBase
+public class AnswersController : BaseController
 {
-    private readonly IMediator _mediator;
-
-    public AnswersController(IMediator mediator) => _mediator = mediator;
+    public AnswersController(IMediator mediator) : base(mediator)
+    {
+    }
 
     [HttpGet("{typeTest:TypeTest}")]
     public async Task<IActionResult> GetAnswers(TypeTest typeTest)
     {
         var getAnswersQuery = new GetTestAnswersQuery()
         {
-            UserId = 1,//fix user
+            UserId = UserId,
             TypeTest = typeTest
         };
 
-        var answers = await _mediator.Send(getAnswersQuery);
+        var answers = await Mediator.Send(getAnswersQuery);
         
         return Ok(answers);
     }
@@ -33,15 +34,15 @@ public class AnswersController : ControllerBase
     [HttpPost("{typeTest:TypeTest}")]
     public async Task<IActionResult> SaveAnswers(TypeTest typeTest, [FromBody] TestAnswers answers)
     {
-        answers.UserId = 1;//fix user
-        answers.TestName = typeTest;
+        answers.UserId = UserId;
+        answers.TestName = typeTest;//fix
         
         var saveAnswersCommand = new SaveTestAnswersCommand()
         {
             TestAnswers = answers
         };
 
-        await _mediator.Send(saveAnswersCommand);
+        await Mediator.Send(saveAnswersCommand);
         return RedirectToAction("GetTestResults","Results",new { typeTest = typeTest});
     }
 
@@ -50,11 +51,11 @@ public class AnswersController : ControllerBase
     {
         var deleteAnswersCommand = new DeleteTestAnswersCommand()
         {
-            UserId = 1,//fix user
+            UserId = UserId,
             TypeTest = typeTest
         };
 
-        await _mediator.Send(deleteAnswersCommand);
+        await Mediator.Send(deleteAnswersCommand);
 
         return Ok();
     }

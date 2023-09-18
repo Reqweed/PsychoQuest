@@ -2,28 +2,29 @@
 using Application.CommandsQueries.Result.Queries.GetTestResults;
 using Entities.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PsychoQuest.Presentation.Controllers;
 
-[ApiController]
+[Authorize]
 [Route("api/[controller]")]
-public class ResultsController : ControllerBase
+public class ResultsController : BaseController
 {
-    private readonly IMediator _mediator;
-
-    public ResultsController(IMediator mediator) => _mediator = mediator;
+    public ResultsController(IMediator mediator) : base(mediator)
+    {
+    }
 
     [HttpGet("{typeTest:TypeTest}")]
     public async Task<IActionResult> GetTestResults(TypeTest typeTest)
     {
         var getTestResultsQuery = new GetTestResultsQuery()
         {
-            UserId = 1, //fix user
+            UserId = UserId,
             TypeTest = typeTest
         };
 
-        var results = await _mediator.Send(getTestResultsQuery);
+        var results = await Mediator.Send(getTestResultsQuery);
 
         return Ok(results);
     }
@@ -33,11 +34,11 @@ public class ResultsController : ControllerBase
     {
         var deleteTestResultsCommand = new DeleteTestResultsCommand()
         {
-            UserId = 1, //fix user
+            UserId = UserId,
             TypeTest = typeTest
         };
 
-        await _mediator.Send(deleteTestResultsCommand);
+        await Mediator.Send(deleteTestResultsCommand);
 
         return Ok();
     }
