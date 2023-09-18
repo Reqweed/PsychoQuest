@@ -1,6 +1,5 @@
 ﻿using Entities.Enums;
-using Entities.Exceptions.NotFoundException;
-using Entities.Exceptions.OutOfRangeException;
+using Entities.Exceptions.BadRequestException;
 using Entities.Models;
 using Repository.Contracts;
 using Service.Contracts.Services;
@@ -27,7 +26,7 @@ public class TestHallCalculationService : ITestHallCalculationService
                 4 => 1,
                 5 => 2,
                 6 => 3,
-                _ => throw new AnswerOptionOutOfRangeException(answer, TypeTest.TestHall)
+                _ => throw new AnswerOptionBadRequestException(answer, TypeTest.TestHall)
             };
         }
         testResult.Result = testResult.Points switch
@@ -35,7 +34,7 @@ public class TestHallCalculationService : ITestHallCalculationService
             <= 39 => "Low emotional intelligence",
             > 39 and <= 69 => "Medium emotional intelligence",
             > 69 and <=90 => "High emotional intelligence",
-            _ => throw new TestResultOutOfRangeException(testResult.Points, TypeTest.TestHall)
+            _ => throw new TestResultBadRequestException(testResult.Points, TypeTest.TestHall)
         };
         
         return testResult;

@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
 using Auth.Interfaces;
+using Entities.Exceptions.BadRequestException;
+using Entities.Exceptions.NotFoundException;
 using Entities.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -20,10 +22,10 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand>
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId.ToString()) 
-                   ?? throw new Exception();//fix exception
+                   ?? throw new UserNotFoundException(request.UserId);
         
         if (!await _userManager.CheckPasswordAsync(user, request.OldPassword))
-            throw new Exception("Invalid password");//fix exception
+            throw new DataUserBadRequestException(nameof(User));
 
         if (request.NewUserName is not null) 
             user.UserName = request.NewUserName;

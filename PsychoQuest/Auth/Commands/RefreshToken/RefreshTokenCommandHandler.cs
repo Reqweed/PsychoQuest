@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
 using Auth.Interfaces;
+using Entities.Exceptions.BadRequestException;
+using Entities.Exceptions.NotFoundException;
 using Entities.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -24,13 +26,13 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand,Au
         var userId = Convert.ToInt64(principal.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         
         if(userId == 0) 
-            throw new Exception();//fix exception
+            throw new TokenBadRequestException();
 
         var user = await _userManager.FindByIdAsync(userId.ToString()) 
-                   ?? throw new Exception();//fix exception;
+                   ?? throw new UserNotFoundException(userId);
 
-        if (user.RefreshToken != request.RefreshToken )
-            throw new Exception();//fix exception
+        if (user.RefreshToken != request.RefreshToken)
+            throw new RefreshTokenBadRequestException();
         
         var newToken = _jwtGenerator.CreateToken(user);
         

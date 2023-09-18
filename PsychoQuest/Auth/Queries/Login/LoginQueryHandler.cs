@@ -1,4 +1,5 @@
 ﻿using Auth.Interfaces;
+using Entities.Exceptions.BadRequestException;
 using Entities.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -22,13 +23,13 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery,AuthenticatedRespons
     public async Task<AuthenticatedResponse> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByEmailAsync(request.Email) 
-                   ?? throw new Exception();//fix exception
+                   ?? throw new DataUserBadRequestException(nameof(request.Email));
         
         var result = await _signInManager
             .CheckPasswordSignInAsync(user, request.Password, false);
 
         if (!result.Succeeded) 
-            throw new Exception();//fix exception
+            throw new DataUserBadRequestException(nameof(request.Password));
 
         var refreshToken = _jwtGenerator.CreateRefreshToken();
         user.RefreshToken = refreshToken;

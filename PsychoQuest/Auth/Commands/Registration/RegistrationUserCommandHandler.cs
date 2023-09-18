@@ -1,4 +1,5 @@
 ﻿using Auth.Interfaces;
+using Entities.Exceptions.BadRequestException;
 using Entities.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -24,7 +25,7 @@ public class RegistrationUserCommandHandler : IRequestHandler<RegistrationUserCo
     public async Task<AuthenticatedResponse> Handle(RegistrationUserCommand request, CancellationToken cancellationToken)
     {
         if (!await _repositoryManager.User.UserExistsAsync(request.Email)) 
-            throw new Exception("This email has already been created!");//fix exception
+            throw new DataUserBadRequestException("email has already been created");
         
         var refreshToken = _jwtGenerator.CreateRefreshToken();
 
@@ -34,13 +35,14 @@ public class RegistrationUserCommandHandler : IRequestHandler<RegistrationUserCo
             Email = request.Email,
             Gender = request.Gender,
             RefreshToken = refreshToken,
+            BirthDate = request.BirthDate,
             RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7)
         };
 
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded) 
-            throw new Exception();//fix exception
+            throw new CreateUserBadRequestException();
         
         return new AuthenticatedResponse()
         {
@@ -48,6 +50,7 @@ public class RegistrationUserCommandHandler : IRequestHandler<RegistrationUserCo
             UserName = user.UserName,
             Email = user.Email,
             Gender = user.Gender,
+            BirthDate = user.BirthDate,
             Token = _jwtGenerator.CreateToken(user),
             RefreshToken = user.RefreshToken
         };

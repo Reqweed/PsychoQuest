@@ -1,6 +1,5 @@
 ﻿using Entities.Enums;
-using Entities.Exceptions.NotFoundException;
-using Entities.Exceptions.OutOfRangeException;
+using Entities.Exceptions.BadRequestException;
 using Entities.Models;
 using Repository.Contracts;
 using Service.Contracts.Services;
@@ -25,7 +24,7 @@ public class ScaleBeckCalculationService : IScaleBeckCalculationService
                 2 => 1,
                 3 => 2,
                 4 => 3,
-                _ => throw new AnswerOptionOutOfRangeException(answer, TypeTest.ScaleBeck)
+                _ => throw new AnswerOptionBadRequestException(answer, TypeTest.ScaleBeck)
             };
         }
         testResult.Result = testResult.Points switch
@@ -35,7 +34,7 @@ public class ScaleBeckCalculationService : IScaleBeckCalculationService
             > 15 and <= 19 => "Moderate depression",
             > 19 and <= 29 => "Severe depression(moderate)",
             > 29 and <= 63 => "Severe depression",
-            _ => throw new TestResultOutOfRangeException(testResult.Points, TypeTest.ScaleBeck)
+            _ => throw new TestResultBadRequestException(testResult.Points, TypeTest.ScaleBeck)
         };
 
         return testResult;

@@ -13,4 +13,6 @@ public class RegistrationUserCommand : IRequest<AuthenticatedResponse>
     public string Password { get; set; }
     
     public Gender Gender { get; set; }
+    
+    public DateTime BirthDate { get; set; }
 }
