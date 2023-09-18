@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Auth\Auth.csproj" />
       <ProjectReference Include="..\PsychoQuest.Presentation\PsychoQuest.Presentation.csproj" />
     </ItemGroup>
 
