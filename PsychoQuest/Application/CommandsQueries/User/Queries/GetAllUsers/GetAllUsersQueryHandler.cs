@@ -11,7 +11,7 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery,IEnumera
     
     public async Task<IEnumerable<Entities.Models.User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
-        var users =  _repositoryManager.User.GetAllUsers();//fix async
+        var users =  _repositoryManager.User.GetAllUsers();
 
         return users;
     }

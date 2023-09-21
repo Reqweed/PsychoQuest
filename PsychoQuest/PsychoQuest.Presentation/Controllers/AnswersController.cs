@@ -34,12 +34,15 @@ public class AnswersController : BaseController
     [HttpPost("{typeTest:TypeTest}")]
     public async Task<IActionResult> SaveAnswers(TypeTest typeTest, [FromBody] TestAnswers answers)
     {
-        answers.UserId = UserId;
-        answers.TestName = typeTest;//fix
-        
         var saveAnswersCommand = new SaveTestAnswersCommand()
         {
-            TestAnswers = answers
+            TestAnswers = new TestAnswers()
+            {
+                UserId = UserId,
+                TestAnswersId = answers.TestAnswersId,
+                Answers = answers.Answers,
+                TestName = typeTest
+            }
         };
 
         await Mediator.Send(saveAnswersCommand);
