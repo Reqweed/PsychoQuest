@@ -18,6 +18,9 @@ public class MongoDbContext : Microsoft.EntityFrameworkCore.DbContext
         var client = new MongoClient(_configuration.GetSection("MongoDb:ConnectionString").Value);
         _database = client.GetDatabase(_configuration.GetSection("MongoDb:DatabaseName").Value);
         
+        _database.CreateCollection(_configuration.GetSection("MongoDb:Collection_answers").Value);
+        _database.CreateCollection(_configuration.GetSection("MongoDb:Collection_questions").Value);
+        
         InitializeTestQuestionsFromJsonFile(QuestionsDirectory);
     }
 
