@@ -7,6 +7,7 @@ using Auth.Queries.Login;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 
 namespace PsychoQuest.Presentation.Controllers;
 
@@ -31,6 +32,7 @@ public class UsersController : BaseController
         return Ok(user);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete]
     public async Task<IActionResult> DeleteUser()
     {

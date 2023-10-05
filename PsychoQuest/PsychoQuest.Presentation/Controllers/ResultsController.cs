@@ -29,7 +29,7 @@ public class ResultsController : BaseController
         return Ok(results);
     }
 
-    [HttpDelete]
+    [HttpDelete("{typeTest:TypeTest}")]
     public async Task<IActionResult> DeleteTestResults(TypeTest typeTest)
     {
         var deleteTestResultsCommand = new DeleteTestResultsCommand()

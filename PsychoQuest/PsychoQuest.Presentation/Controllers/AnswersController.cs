@@ -30,7 +30,7 @@ public class AnswersController : BaseController
         
         return Ok(answers);
     }
-
+    
     [HttpPost("{typeTest:TypeTest}")]
     public async Task<IActionResult> SaveAnswers(TypeTest typeTest, [FromBody] TestAnswers answers)
     {
