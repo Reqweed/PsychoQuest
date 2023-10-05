@@ -12,14 +12,12 @@ public class RegistrationUserCommandHandler : IRequestHandler<RegistrationUserCo
     private readonly IRepositoryManager _repositoryManager;
     private readonly IJwtGenerator _jwtGenerator;
     private readonly UserManager<User> _userManager;
-    private readonly SignInManager<User> _signInManager;
 
-    public RegistrationUserCommandHandler(IRepositoryManager repositoryManager, IJwtGenerator jwtGenerator, UserManager<User> userManager, SignInManager<User> signInManager)
+    public RegistrationUserCommandHandler(IRepositoryManager repositoryManager, IJwtGenerator jwtGenerator, UserManager<User> userManager)
     {
         _repositoryManager = repositoryManager;
         _jwtGenerator = jwtGenerator;
         _userManager = userManager;
-        _signInManager = signInManager;
     }
 
     public async Task<AuthenticatedResponse> Handle(RegistrationUserCommand request, CancellationToken cancellationToken)
