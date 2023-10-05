@@ -25,10 +25,14 @@ public class JwtGenerator : IJwtGenerator
     
     public string CreateToken(User user)
     {
+        var role = _userManager.GetRolesAsync(user).Result.ToString() 
+                   ?? throw new Exception();//fix
+        
         var claims = new List<Claim>()
         {
             new(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Gender, user.Gender.ToString()),
+            new(ClaimTypes.Role,role),
             new(JwtRegisteredClaimNames.Email, user.Email!)
         };
         
