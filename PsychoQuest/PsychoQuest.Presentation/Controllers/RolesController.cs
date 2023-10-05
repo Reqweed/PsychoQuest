@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PsychoQuest.Presentation.Controllers;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 public class RolesController : BaseController
 {
