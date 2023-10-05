@@ -17,6 +17,7 @@ builder.Services.AddControllers()
         options.SerializerSettings.Converters.Add(new StringEnumConverter());
     });
 
+builder.Services.ConfigureIntializer();
 builder.Services.ConfigureRouteOptions();
 
 var app = builder.Build();

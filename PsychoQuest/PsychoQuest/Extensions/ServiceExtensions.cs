@@ -10,6 +10,7 @@ using PsychoQuest.Presentation.Constraints;
 using Repository.Contracts;
 using Repository.DbContext;
 using Repository;
+using Repository.Initializer;
 using Service;
 using Service.Contracts;
 
@@ -81,4 +82,17 @@ public static class ServiceExtensions
     
     public static void ConfigureMediatR(this IServiceCollection services) => 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Application.AssemblyReference).Assembly));
+
+    public static async void ConfigureIntializer(this IServiceCollection service)
+    {
+        var listService = service.BuildServiceProvider().CreateScope();
+        
+        var rolesManager = listService.ServiceProvider
+            .GetRequiredService<RoleManager<IdentityRole<long>>>();
+        var userManager = listService.ServiceProvider
+            .GetRequiredService<UserManager<User>>();
+        
+        await Initializer.InitializerRoleAsync(rolesManager);
+        await Initializer.InitializerUserAsync(userManager);
+    }
 }
