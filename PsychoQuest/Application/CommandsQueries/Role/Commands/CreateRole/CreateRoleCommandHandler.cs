@@ -1,3 +1,4 @@
+using Entities.Exceptions.BadRequestException;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -17,6 +18,6 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand>
         var result = await _roleManager.CreateAsync(new IdentityRole<long>(request.RoleName));
         
         if (!result.Succeeded) 
-            throw new Exception();//fix
+            throw new CreateRoleBadRequestException();
     }
 }

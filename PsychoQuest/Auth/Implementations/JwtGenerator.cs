@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Auth.Interfaces;
+using Entities.Exceptions.NotFoundException;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -25,14 +26,14 @@ public class JwtGenerator : IJwtGenerator
     
     public string CreateToken(User user)
     {
-        var role = _userManager.GetRolesAsync(user).Result.ToString() 
-                   ?? throw new Exception();//fix
+        var roles = _userManager.GetRolesAsync(user).Result 
+                   ?? throw new RoleNotFoundException(user.Id);
         
         var claims = new List<Claim>()
         {
             new(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Gender, user.Gender.ToString()),
-            new(ClaimTypes.Role,role),
+            new(ClaimTypes.Role, roles[0]),
             new(JwtRegisteredClaimNames.Email, user.Email!)
         };
         

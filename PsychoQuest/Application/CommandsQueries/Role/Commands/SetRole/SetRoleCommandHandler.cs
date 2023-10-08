@@ -21,10 +21,10 @@ public class SetRoleCommandHandler : IRequestHandler<SetRoleCommand>
                    ?? throw new UserNotFoundException(request.UserId);
 
         var role = await _roleManager.FindByIdAsync(request.UserId.ToString()) 
-                   ?? throw new Exception();//fix
+                   ?? throw new RoleNotFoundException(request.RoleId);
 
-        var pastRole = await _userManager.GetRolesAsync(user) 
-                       ?? throw new Exception();//fix
+        var pastRole = await _userManager.GetRolesAsync(user)
+                       ?? throw new RoleNotFoundException(user.Id);
 
         await _userManager.RemoveFromRolesAsync(user, pastRole);
 
