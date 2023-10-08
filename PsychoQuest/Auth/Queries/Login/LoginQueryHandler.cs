@@ -41,7 +41,6 @@ public class LoginQueryHandler : IRequestHandler<LoginQuery,AuthenticatedRespons
         return new AuthenticatedResponse()
         {
             UserId = user.Id,
-
             Email = user.Email,
             Token = _jwtGenerator.CreateToken(user),
             RefreshToken = user.RefreshToken

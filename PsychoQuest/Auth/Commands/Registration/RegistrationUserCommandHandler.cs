@@ -42,6 +42,11 @@ public class RegistrationUserCommandHandler : IRequestHandler<RegistrationUserCo
         if (!result.Succeeded) 
             throw new CreateUserBadRequestException();
         
+        result = await _userManager.AddToRoleAsync(user, "User");
+       
+        if (!result.Succeeded) 
+            throw new SetRoleBadRequestException(user.Id,"User");
+        
         return new AuthenticatedResponse()
         {
             UserId = user.Id,
