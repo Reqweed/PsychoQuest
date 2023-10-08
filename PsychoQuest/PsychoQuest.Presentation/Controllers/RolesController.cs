@@ -3,41 +3,58 @@ using Application.CommandsQueries.Role.Commands.DeleteRole;
 using Application.CommandsQueries.Role.Commands.SetRole;
 using Application.CommandsQueries.Role.Queries.GetAllRoles;
 using Application.CommandsQueries.Role.Queries.GetRole;
+using Application.CommandsQueries.Role.Queries.GetRoleForAdmin;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PsychoQuest.Presentation.Controllers;
 
-[Authorize(Roles = "Admin")]
+[Authorize]
 [Route("api/[controller]")]
 public class RolesController : BaseController
 {
     public RolesController(IMediator mediator) : base(mediator) {}
     
+    [Authorize(Roles = "Admin")]
     [HttpGet("{roleId:long}")]
-    public async Task<IActionResult> GetRole(long roleId)
+    public async Task<IActionResult> GetRoleForAdmin(long roleId)
     {
-        var getRoleQueries = new GetRoleQueries()
+        var getRoleForAdmin = new GetRoleForAdminQuery()
         {
             RoleId = roleId
+        };
+
+        var role = await Mediator.Send(getRoleForAdmin);
+
+        return Ok(role);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> GetRole()
+    {
+        var getRoleQueries = new GetRoleQuery()
+        {
+            UserId = UserId
         };
 
         var role = await Mediator.Send(getRoleQueries);
 
         return Ok(role);
     }
-
-    [HttpGet]
+    
+    [Authorize(Roles = "Admin")]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllRoles()
     {
-        var getAllRolesQueries = new GetAllRolesQueries();
+        var getAllRolesQueries = new GetAllRolesQuery();
 
         var roles = await Mediator.Send(getAllRolesQueries);
 
         return Ok(roles);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommand createRoleCommand)
     {
@@ -46,6 +63,7 @@ public class RolesController : BaseController
         return Ok();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{roleId}")]
     public async Task<IActionResult> DeleteRole(long roleId)
     {
@@ -58,7 +76,8 @@ public class RolesController : BaseController
 
         return Ok();
     }
-
+    
+    [Authorize(Roles = "Admin")]
     [HttpPost("set-role")]
     public async Task<IActionResult> SetRole([FromBody] long roleId)
     {

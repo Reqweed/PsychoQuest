@@ -18,7 +18,7 @@ public class UsersController : BaseController
     public UsersController(IMediator mediator) : base(mediator)
     {
     }
-    
+    [AllowAnonymous]
     [HttpGet]
     public async Task<IActionResult> GetUser()
     {
