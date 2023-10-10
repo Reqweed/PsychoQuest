@@ -1,14 +1,12 @@
 using Newtonsoft.Json.Converters;
 using PsychoQuest.Extensions;
-using Repository;
-using Repository.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureDbContext();
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
-builder.Services.AddScoped<ILoggerManager, LoggerManager>();
+builder.Services.ConfigureNlog();
 builder.Services.ConfigureMediatR();
 
 builder.Services.AddAuth(builder.Configuration);

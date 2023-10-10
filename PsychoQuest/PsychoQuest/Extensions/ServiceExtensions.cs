@@ -67,7 +67,12 @@ public static class ServiceExtensions
         services.AddSingleton<MongoDbContext>();
         services.AddSingleton<PostgreDbContext>();
     }
-
+    
+    public static void ConfigureNlog(this IServiceCollection services)
+    {
+        services.AddScoped<ILoggerManager, LoggerManager>();
+    }
+    
     public static void ConfigureRepositoryManager(this IServiceCollection services) =>
         services.AddScoped<IRepositoryManager, RepositoryManager>();
 
