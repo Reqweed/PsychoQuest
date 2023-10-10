@@ -6,6 +6,7 @@ using Entities.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Repository.Contracts;
 
 namespace PsychoQuest.Presentation.Controllers;
 
@@ -13,13 +14,15 @@ namespace PsychoQuest.Presentation.Controllers;
 [Route("api/[controller]")]
 public class AnswersController : BaseController
 {
-    public AnswersController(IMediator mediator) : base(mediator)
+    public AnswersController(IMediator mediator, ILoggerManager loggerManager) : base(mediator, loggerManager)
     {
     }
 
     [HttpGet("{typeTest:TypeTest}")]
     public async Task<IActionResult> GetAnswers(TypeTest typeTest)
     {
+        LoggerManager.LogInfo($"Controller:Answers Action:GetAnswers - User with id:{UserId} has begun");
+        
         var getAnswersQuery = new GetTestAnswersQuery()
         {
             UserId = UserId,
@@ -28,12 +31,16 @@ public class AnswersController : BaseController
 
         var answers = await Mediator.Send(getAnswersQuery);
         
+        LoggerManager.LogInfo($"Controller:Answers Action:GetAnswers - User with id:{UserId} was finished");
+        
         return Ok(answers);
     }
     
     [HttpPost("{typeTest:TypeTest}")]
     public async Task<IActionResult> SaveAnswers(TypeTest typeTest, [FromBody] TestAnswers answers)
     {
+        LoggerManager.LogInfo($"Controller:Answers Action:SaveAnswers - User with id:{UserId} has begun");
+        
         var saveAnswersCommand = new SaveTestAnswersCommand()
         {
             TestAnswers = new TestAnswers()
@@ -46,12 +53,17 @@ public class AnswersController : BaseController
         };
 
         await Mediator.Send(saveAnswersCommand);
+        
+        LoggerManager.LogInfo($"Controller:Answers Action:SaveAnswers - User with id:{UserId} was finished");
+        
         return RedirectToAction("GetTestResults","Results",new { typeTest = typeTest});
     }
 
     [HttpDelete("{typeTest:TypeTest}")]
     public async Task<IActionResult> DeleteAnswers(TypeTest typeTest)
     {
+        LoggerManager.LogInfo($"Controller:Answers Action:DeleteAnswers - User with id:{UserId} has begun");
+        
         var deleteAnswersCommand = new DeleteTestAnswersCommand()
         {
             UserId = UserId,
@@ -60,6 +72,8 @@ public class AnswersController : BaseController
 
         await Mediator.Send(deleteAnswersCommand);
 
+        LoggerManager.LogInfo($"Controller:Answers Action:DeleteAnswers - User with id:{UserId} was finished");
+        
         return Ok();
     }
 
