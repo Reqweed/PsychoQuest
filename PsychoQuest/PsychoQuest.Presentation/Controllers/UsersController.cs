@@ -85,6 +85,8 @@ public class UsersController : BaseController
     {
         LoggerManager.LogInfo($"Controller:User Action:RefreshToken - User with id:{UserId} has begun");
 
+        refreshTokenCommand.UserId = UserId;
+        
         var response = await Mediator.Send(refreshTokenCommand);
 
         LoggerManager.LogInfo($"Controller:User Action:RefreshToken - User with id:{UserId} was finished");

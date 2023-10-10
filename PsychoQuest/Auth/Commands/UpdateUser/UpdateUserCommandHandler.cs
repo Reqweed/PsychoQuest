@@ -1,31 +1,42 @@
-﻿using System.Security.Claims;
-using Auth.Interfaces;
-using Entities.Exceptions.BadRequestException;
+﻿using Entities.Exceptions.BadRequestException;
 using Entities.Exceptions.NotFoundException;
 using Entities.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Repository.Contracts;
 
 namespace Auth.Commands.UpdateUser;
 
 public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand>
 {
-    private readonly IJwtGenerator _jwtGenerator;
     private readonly UserManager<User> _userManager;
+    private readonly ILoggerManager _loggerManager;
 
-    public UpdateUserCommandHandler(IJwtGenerator jwtGenerator, UserManager<User> userManager)
+    public UpdateUserCommandHandler(UserManager<User> userManager, ILoggerManager loggerManager)
     {
-        _jwtGenerator = jwtGenerator;
         _userManager = userManager;
+        _loggerManager = loggerManager;
     }
 
     public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(request.UserId.ToString()) 
-                   ?? throw new UserNotFoundException(request.UserId);
+        _loggerManager.LogInfo($"Command:UpdateUserCommand - User with id:{request.UserId} has begun");
+
+        var user = await _userManager.FindByIdAsync(request.UserId.ToString());
         
+        if(user is null)
+        {
+            _loggerManager.LogWarn($"Command:UpdateUserCommand - User with id:{request.UserId} doesn't exist");
+
+            throw new UserNotFoundException(request.UserId);
+        }
+
         if (!await _userManager.CheckPasswordAsync(user, request.OldPassword))
+        {
+            _loggerManager.LogWarn($"Command:UpdateUserCommand - User with id:{request.UserId} with invalid password");
+
             throw new DataUserBadRequestException(nameof(User));
+        }
 
         if (request.NewUserName is not null) 
             user.UserName = request.NewUserName;
@@ -35,5 +46,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand>
             await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
         
         await _userManager.UpdateAsync(user);
+        
+        _loggerManager.LogInfo($"Command:UpdateUserCommand - User with id:{request.UserId} was finished");
     }
 }

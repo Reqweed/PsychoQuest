@@ -12,18 +12,26 @@ public class RegistrationUserCommandHandler : IRequestHandler<RegistrationUserCo
     private readonly IRepositoryManager _repositoryManager;
     private readonly IJwtGenerator _jwtGenerator;
     private readonly UserManager<User> _userManager;
+    private readonly ILoggerManager _loggerManager;
 
-    public RegistrationUserCommandHandler(IRepositoryManager repositoryManager, IJwtGenerator jwtGenerator, UserManager<User> userManager)
+    public RegistrationUserCommandHandler(IRepositoryManager repositoryManager, IJwtGenerator jwtGenerator, UserManager<User> userManager, ILoggerManager loggerManager)
     {
         _repositoryManager = repositoryManager;
         _jwtGenerator = jwtGenerator;
         _userManager = userManager;
+        _loggerManager = loggerManager;
     }
 
     public async Task<AuthenticatedResponse> Handle(RegistrationUserCommand request, CancellationToken cancellationToken)
     {
-        if (!await _repositoryManager.User.UserExistsAsync(request.Email)) 
+        _loggerManager.LogInfo($"Command:RefreshTokenCommand - New user has begun");
+
+        if (!await _repositoryManager.User.UserExistsAsync(request.Email))
+        {
+            _loggerManager.LogWarn($"Command:RefreshTokenCommand - New user has existing mail");
+
             throw new DataUserBadRequestException("email has already been created");
+        }
         
         var refreshToken = _jwtGenerator.CreateRefreshToken();
 
@@ -39,14 +47,24 @@ public class RegistrationUserCommandHandler : IRequestHandler<RegistrationUserCo
 
         var result = await _userManager.CreateAsync(user, request.Password);
 
-        if (!result.Succeeded) 
+        if (!result.Succeeded)
+        {
+            _loggerManager.LogWarn($"Command:RefreshTokenCommand - New User wasn't created successfully");
+
             throw new CreateUserBadRequestException();
+        } 
         
         result = await _userManager.AddToRoleAsync(user, "User");
-       
-        if (!result.Succeeded) 
+
+        if (!result.Succeeded)
+        {
+            _loggerManager.LogWarn($"Command:RefreshTokenCommand - New user wasn't add role successfully");
+
             throw new SetRoleBadRequestException(user.Id,"User");
+        } 
         
+        _loggerManager.LogInfo($"Command:RefreshTokenCommand - New user was finished");
+
         return new AuthenticatedResponse()
         {
             UserId = user.Id,

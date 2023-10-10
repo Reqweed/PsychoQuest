@@ -23,7 +23,7 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand>
 
         if (!result.Succeeded)
         {
-            _loggerManager.LogWarn($"Command:CreateRoleCommand - Role with name:{request.RoleName} doesn't succeeded");
+            _loggerManager.LogWarn($"Command:CreateRoleCommand - Role with name:{request.RoleName} wasn't created successfully");
             
             throw new CreateRoleBadRequestException();
         } 

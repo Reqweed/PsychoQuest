@@ -55,7 +55,7 @@ public class SetRoleCommandHandler : IRequestHandler<SetRoleCommand>
         
         if (!result.Succeeded)
         {
-            _loggerManager.LogWarn($"Command:SetRoleCommand - User with id:{request.UserId} set Role with id:{request.RoleId} doesn't succeeded");
+            _loggerManager.LogWarn($"Command:SetRoleCommand - User with id:{request.UserId} set Role with id:{request.RoleId} wasn't add successfully");
 
             throw new Exception();
         } 
