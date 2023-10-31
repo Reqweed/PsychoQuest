@@ -4,13 +4,13 @@ namespace Repository.Contracts.Repository;
 
 public interface IUserRepository
 {
-    IEnumerable<User> GetAllUsers();
+    Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken);
 
-    Task<User> GetUserAsync(long userId);
+    Task<User> GetUserAsync(long userId, CancellationToken cancellationToken);
 
-    Task DeleteUserAsync(long userId);
+    Task DeleteUserAsync(long userId, CancellationToken cancellationToken);
 
-    Task<bool> UserExistsAsync(long userId);
+    Task<bool> UserExistsAsync(long userId, CancellationToken cancellationToken);
     
-    Task<bool> UserExistsAsync(string userEmail);
+    Task<bool> UserExistsAsync(string userEmail, CancellationToken cancellationToken);
 }

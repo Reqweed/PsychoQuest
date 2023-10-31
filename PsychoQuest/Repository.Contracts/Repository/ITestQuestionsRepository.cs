@@ -5,5 +5,5 @@ namespace Repository.Contracts.Repository;
 
 public interface ITestQuestionsRepository
 {
-    Task<TestQuestions> GetTestQuestionsAsync(TypeTest typeTest);
+    Task<TestQuestions> GetTestQuestionsAsync(TypeTest typeTest, CancellationToken cancellationToken);
 }

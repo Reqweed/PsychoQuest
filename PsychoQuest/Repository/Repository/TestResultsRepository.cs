@@ -12,30 +12,30 @@ public class TestResultsRepository : ITestResultsRepository
 
     public TestResultsRepository(PostgreDbContext postgreDbContext) => _postgreDbContext = postgreDbContext;
     
-    public async Task<TestResults> GetTestResultsAsync(long userId, TypeTest typeTest)
+    public async Task<TestResults> GetTestResultsAsync(long userId, TypeTest typeTest, CancellationToken cancellationToken)
     {
         var results = await _postgreDbContext.TestResults
-            .FirstOrDefaultAsync(res => res.UserId == userId && res.TestName == typeTest);
+            .FirstOrDefaultAsync(res => res.UserId == userId && res.TestName == typeTest, cancellationToken);
 
         return results;
     }
 
-    public async Task SaveTestResultsAsync(TestResults testResults)
+    public async Task SaveTestResultsAsync(TestResults testResults, CancellationToken cancellationToken)
     {
-        await _postgreDbContext.TestResults.AddAsync(testResults);
-        await _postgreDbContext.SaveChangesAsync();
+        await _postgreDbContext.TestResults.AddAsync(testResults, cancellationToken);
+        await _postgreDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteTestResultsAsync(long userId, TypeTest typeTest)
+    public async Task DeleteTestResultsAsync(long userId, TypeTest typeTest, CancellationToken cancellationToken)
     {
-        var resultToDelete = await GetTestResultsAsync(userId,typeTest);
+        var resultToDelete = await GetTestResultsAsync(userId, typeTest, cancellationToken);
         
         _postgreDbContext.TestResults.Remove(resultToDelete);
-        await _postgreDbContext.SaveChangesAsync();
+        await _postgreDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> TestResultExistsAsync(long userId, TypeTest typeTest)
+    public async Task<bool> TestResultExistsAsync(long userId, TypeTest typeTest, CancellationToken cancellationToken)
     {
-        return await GetTestResultsAsync(userId,typeTest) is null;
+        return await GetTestResultsAsync(userId, typeTest, cancellationToken) is null;
     }
 }

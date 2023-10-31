@@ -12,14 +12,14 @@ public class TestQuestionsRepository : ITestQuestionsRepository
 
     public TestQuestionsRepository(MongoDbContext mongoDbContext) => _mongoDbContext = mongoDbContext;
 
-    public async Task<TestQuestions> GetTestQuestionsAsync(TypeTest typeTest)
+    public async Task<TestQuestions> GetTestQuestionsAsync(TypeTest typeTest, CancellationToken cancellationToken)
     {
         var filter = Builders<TestQuestions>.Filter.And(
             Builders<TestQuestions>.Filter.Eq(nameof(TestQuestions.TestName), typeTest)
         );
         
-        var questions = await _mongoDbContext.TestQuestions.Find(filter).FirstOrDefaultAsync();// fix async
+        var questions = await _mongoDbContext.TestQuestions.Find(filter).ToListAsync(cancellationToken);
 
-        return questions;
+        return questions.FirstOrDefault();
     }
 }

@@ -11,35 +11,36 @@ public class UserRepository : IUserRepository
 
     public UserRepository(PostgreDbContext postgreDbContext) => _postgreDbContext = postgreDbContext;
 
-    public IEnumerable<User> GetAllUsers()
+    public async Task<IEnumerable<User>> GetAllUsers(CancellationToken cancellationToken)
     {
-        var users = _postgreDbContext.Users;
+        var users = await _postgreDbContext.Users.ToListAsync(cancellationToken);
 
         return users;
     }
 
-    public async Task<User> GetUserAsync(long userId)
+    public async Task<User> GetUserAsync(long userId, CancellationToken cancellationToken)
     {
-        var user = await _postgreDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _postgreDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
         return user;
     }
 
-    public async Task DeleteUserAsync(long userId)
+    public async Task DeleteUserAsync(long userId, CancellationToken cancellationToken)
     {
-        var user = await GetUserAsync(userId);
+        var user = await GetUserAsync(userId, cancellationToken);
         
         _postgreDbContext.Users.Remove(user);
-        await _postgreDbContext.SaveChangesAsync();
+        await _postgreDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<bool> UserExistsAsync(long userId)
+    public async Task<bool> UserExistsAsync(long userId, CancellationToken cancellationToken)
     {
-        return await GetUserAsync(userId) is null;
+        return await GetUserAsync(userId, cancellationToken) is null;
     }
 
-    public async Task<bool> UserExistsAsync(string userEmail)
+    public async Task<bool> UserExistsAsync(string userEmail, CancellationToken cancellationToken)
     {
-        return await _postgreDbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail) is null;
+        return await _postgreDbContext.Users
+            .FirstOrDefaultAsync(u => u.Email == userEmail, cancellationToken) is null;
     }
 }
