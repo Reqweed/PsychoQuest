@@ -19,14 +19,14 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand>
     {
         _loggerManager.LogInfo($"Command:DeleteUserCommand - User with id:{request.UserId} has begun");
 
-        if (await _repositoryManager.User.UserExistsAsync(request.UserId))
+        if (await _repositoryManager.User.UserExistsAsync(request.UserId, cancellationToken))
         {
             _loggerManager.LogWarn($"Command:DeleteUserCommand - User with id:{request.UserId} doesn't exist");
             
             throw new UserNotFoundException(request.UserId);
         } 
 
-        await _repositoryManager.User.DeleteUserAsync(request.UserId);
+        await _repositoryManager.User.DeleteUserAsync(request.UserId, cancellationToken);
         
         _loggerManager.LogInfo($"Command:DeleteUserCommand - User with id:{request.UserId} was finished");
     }

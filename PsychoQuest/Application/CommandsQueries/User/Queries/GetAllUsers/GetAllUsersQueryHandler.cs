@@ -18,7 +18,7 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery,IEnumera
     {
         _loggerManager.LogInfo($"Query:GetAllUsersQuery has begun");
         
-        var users =  _repositoryManager.User.GetAllUsers();
+        var users = await _repositoryManager.User.GetAllUsers(cancellationToken);
 
         _loggerManager.LogInfo($"Query:GetAllUsersQuery was finished");
         

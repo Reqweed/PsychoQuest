@@ -20,7 +20,7 @@ public class GetTestQuestionsQueryHandler : IRequestHandler<GetTestQuestionsQuer
     {
         _loggerManager.LogInfo($"Query:GetTestQuestionsQuery - Questions:{request.TypeTest} has begun");
 
-        var questions = await _repositoryManager.TestQuestions.GetTestQuestionsAsync(request.TypeTest);
+        var questions = await _repositoryManager.TestQuestions.GetTestQuestionsAsync(request.TypeTest, cancellationToken);
 
         if (questions is null)
         {

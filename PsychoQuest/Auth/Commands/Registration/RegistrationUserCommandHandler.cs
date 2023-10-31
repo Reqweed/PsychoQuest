@@ -26,7 +26,7 @@ public class RegistrationUserCommandHandler : IRequestHandler<RegistrationUserCo
     {
         _loggerManager.LogInfo($"Command:RefreshTokenCommand - New user has begun");
 
-        if (!await _repositoryManager.User.UserExistsAsync(request.Email))
+        if (!await _repositoryManager.User.UserExistsAsync(request.Email, cancellationToken))
         {
             _loggerManager.LogWarn($"Command:RefreshTokenCommand - New user has existing mail");
 

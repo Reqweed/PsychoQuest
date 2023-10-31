@@ -19,7 +19,7 @@ public class GetUserQueryHandler : IRequestHandler<GetUserQuery,Entities.Models.
     {
         _loggerManager.LogInfo($"Query:GetUserQuery - User with id:{request.UserId} has begun");
 
-        var user = await _repositoryManager.User.GetUserAsync(request.UserId);
+        var user = await _repositoryManager.User.GetUserAsync(request.UserId, cancellationToken);
         if (user is null)
         {
             _loggerManager.LogWarn($"Query:GetUserQuery - User with id:{request.UserId} doesn't exist");

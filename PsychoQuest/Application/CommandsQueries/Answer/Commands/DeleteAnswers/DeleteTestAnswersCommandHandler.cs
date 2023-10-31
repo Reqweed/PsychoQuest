@@ -19,14 +19,14 @@ public class DeleteTestAnswersCommandHandler : IRequestHandler<DeleteTestAnswers
     {
         _loggerManager.LogInfo($"Command:DeleteTestAnswersCommand - Answers for user:{request.UserId} and test:{request.TypeTest} has begun");
 
-        if (await _repositoryManager.TestAnswers.TestAnswersExistsAsync(request.UserId, request.TypeTest))
+        if (await _repositoryManager.TestAnswers.TestAnswersExistsAsync(request.UserId, request.TypeTest, cancellationToken))
         {
             _loggerManager.LogWarn($"Command:DeleteTestAnswersCommand - Answers for user:{request.UserId} and test:{request.TypeTest} doesn't exist");
 
             throw new TestAnswersNotFoundException(request.UserId, request.TypeTest);
         }
 
-        await _repositoryManager.TestAnswers.DeleteTestAnswersAsync(request.UserId, request.TypeTest);
+        await _repositoryManager.TestAnswers.DeleteTestAnswersAsync(request.UserId, request.TypeTest, cancellationToken);
         
         _loggerManager.LogInfo($"Command:DeleteTestAnswersCommand - Answers for user:{request.UserId} and test:{request.TypeTest} was finished");
     }

@@ -25,18 +25,18 @@ public class SaveTestAnswersCommandHandler : IRequestHandler<SaveTestAnswersComm
     {
         _loggerManager.LogInfo($"Command:SaveTestAnswersCommand - Answers for user:{request.TestAnswers.UserId} and test:{request.TestAnswers.TestName} has begun");
 
-        if (!await _repositoryManager.TestResults.TestResultExistsAsync(request.TestAnswers.UserId, request.TestAnswers.TestName))
+        if (!await _repositoryManager.TestResults.TestResultExistsAsync(request.TestAnswers.UserId, request.TestAnswers.TestName, cancellationToken))
         {
             _loggerManager.LogWarn($"Command:SaveTestAnswersCommand - Result for user:{request.TestAnswers.UserId} and test:{request.TestAnswers.TestName} doesn't exist");
 
-            await _repositoryManager.TestResults.DeleteTestResultsAsync(request.TestAnswers.UserId, request.TestAnswers.TestName);
+            await _repositoryManager.TestResults.DeleteTestResultsAsync(request.TestAnswers.UserId, request.TestAnswers.TestName, cancellationToken);
         }
 
-        if (!await _repositoryManager.TestAnswers.TestAnswersExistsAsync(request.TestAnswers.UserId, request.TestAnswers.TestName))
+        if (!await _repositoryManager.TestAnswers.TestAnswersExistsAsync(request.TestAnswers.UserId, request.TestAnswers.TestName, cancellationToken))
         {
             _loggerManager.LogWarn($"Command:SaveTestAnswersCommand - Answers for user:{request.TestAnswers.UserId} and test:{request.TestAnswers.TestName} doesn't exist");
 
-            await _repositoryManager.TestAnswers.DeleteTestAnswersAsync(request.TestAnswers.UserId,request.TestAnswers.TestName);
+            await _repositoryManager.TestAnswers.DeleteTestAnswersAsync(request.TestAnswers.UserId,request.TestAnswers.TestName, cancellationToken);
         }
 
         var result = _serviceManager.Calculate(request.TestAnswers);
@@ -48,8 +48,8 @@ public class SaveTestAnswersCommandHandler : IRequestHandler<SaveTestAnswersComm
             throw new TypeTestNotFoundException(request.TestAnswers.TestName);
         }
         
-        await _repositoryManager.TestAnswers.SaveTestAnswersAsync(request.TestAnswers);
-        await _repositoryManager.TestResults.SaveTestResultsAsync(result);
+        await _repositoryManager.TestAnswers.SaveTestAnswersAsync(request.TestAnswers, cancellationToken);
+        await _repositoryManager.TestResults.SaveTestResultsAsync(result, cancellationToken);
         
         _loggerManager.LogInfo($"Command:SaveTestAnswersCommand - Answers for user:{request.TestAnswers.UserId} and test:{request.TestAnswers.TestName} was finished");
     }

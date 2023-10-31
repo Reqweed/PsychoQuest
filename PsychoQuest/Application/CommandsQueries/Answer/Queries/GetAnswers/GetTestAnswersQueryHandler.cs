@@ -20,14 +20,14 @@ public class GetTestAnswersQueryHandler : IRequestHandler<GetTestAnswersQuery,Te
     {
         _loggerManager.LogInfo($"Query:GetTestAnswersQuery - Answers for user:{request.UserId} and test:{request.TypeTest} has begun");
 
-        if (await _repositoryManager.TestAnswers.TestAnswersExistsAsync(request.UserId, request.TypeTest))
+        if (await _repositoryManager.TestAnswers.TestAnswersExistsAsync(request.UserId, request.TypeTest, cancellationToken))
         {
             _loggerManager.LogWarn($"Query:GetTestAnswersQuery - Answers for user:{request.UserId} and test:{request.TypeTest} doesn't exist");
 
             throw new TestAnswersNotFoundException(request.UserId, request.TypeTest);
         }
 
-        var answers = await _repositoryManager.TestAnswers.GetTestAnswersAsync(request.UserId, request.TypeTest);
+        var answers = await _repositoryManager.TestAnswers.GetTestAnswersAsync(request.UserId, request.TypeTest, cancellationToken);
 
         _loggerManager.LogInfo($"Query:GetTestAnswersQuery - Answers for user:{request.UserId} and test:{request.TypeTest} was finished");
 

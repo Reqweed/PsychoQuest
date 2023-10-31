@@ -20,14 +20,14 @@ public class GetTestResultsQueryHandler : IRequestHandler<GetTestResultsQuery,Te
     {
         _loggerManager.LogInfo($"Query:GetTestResultsQuery - User with id:{request.UserId} and Test:{request.TypeTest} has begun");
         
-        if (await _repositoryManager.TestResults.TestResultExistsAsync(request.UserId, request.TypeTest))
+        if (await _repositoryManager.TestResults.TestResultExistsAsync(request.UserId, request.TypeTest, cancellationToken))
         {
             _loggerManager.LogWarn($"Query:GetTestResultsQuery - User hadn't test results:{request.TypeTest} doesn't exist");
             
             throw new TestResultsNotFoundException(request.UserId, request.TypeTest);
         }
         
-        var results = await _repositoryManager.TestResults.GetTestResultsAsync(request.UserId, request.TypeTest);
+        var results = await _repositoryManager.TestResults.GetTestResultsAsync(request.UserId, request.TypeTest, cancellationToken);
 
         _loggerManager.LogInfo($"Query:GetTestResultsQuery - User with id:{request.UserId} and Test:{request.TypeTest} was finished");
 

@@ -22,7 +22,7 @@ public class GetRoleQueryHandler : IRequestHandler<GetRoleQuery,string>
     {
         _loggerManager.LogInfo($"Query:GetRoleQuery - User with id:{request.UserId} has begun");
 
-        var user = await _repositoryManager.User.GetUserAsync(request.UserId);
+        var user = await _repositoryManager.User.GetUserAsync(request.UserId, cancellationToken);
         if (user is null)
         {
             _loggerManager.LogWarn($"Query:GetRoleQuery - User with id:{request.UserId} doesn't exist");
