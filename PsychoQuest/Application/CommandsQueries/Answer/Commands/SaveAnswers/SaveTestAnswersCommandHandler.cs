@@ -1,5 +1,7 @@
-﻿using Entities.Enums;
+﻿using Amazon.Runtime.Internal.Transform;
+using Entities.Enums;
 using Entities.Exceptions.NotFoundException;
+using Entities.Models;
 using MediatR;
 using Repository.Contracts;
 using Service.Contracts;
@@ -36,15 +38,15 @@ public class SaveTestAnswersCommandHandler : IRequestHandler<SaveTestAnswersComm
 
             await _repositoryManager.TestAnswers.DeleteTestAnswersAsync(request.TestAnswers.UserId,request.TestAnswers.TestName);
         }
-        
-        var result = request.TestAnswers.TestName switch
+
+        var result = _serviceManager.Calculate(request.TestAnswers);
+
+        if (result is null)
         {
-            TypeTest.ScaleBeck => _serviceManager.ScaleBeck.CalculateTest(request.TestAnswers),
-            TypeTest.TestHall => _serviceManager.TestHall.CalculateTest(request.TestAnswers),
-            _ => throw new TypeTestNotFoundException(request.TestAnswers.TestName)//add log
-        };
-        
-        result = _serviceManager
+            _loggerManager.LogWarn($"Command:SaveTestAnswersCommand - Calculate for user:{request.TestAnswers.UserId} and test:{request.TestAnswers.TestName} has been error");
+
+            throw new TypeTestNotFoundException(request.TestAnswers.TestName);
+        }
         
         await _repositoryManager.TestAnswers.SaveTestAnswersAsync(request.TestAnswers);
         await _repositoryManager.TestResults.SaveTestResultsAsync(result);
