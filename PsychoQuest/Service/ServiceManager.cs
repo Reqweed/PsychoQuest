@@ -1,4 +1,5 @@
-﻿using Repository.Contracts;
+﻿using Entities.Models;
+using Repository.Contracts;
 using Service.Contracts;
 using Service.Contracts.Services;
 using Service.Services;
@@ -18,4 +19,14 @@ public class ServiceManager : IServiceManager
 
     public IScaleBeckCalculationService ScaleBeck => _scaleBeckCalculationService.Value;
     public ITestHallCalculationService TestHall => _testHallCalculationService.Value;
+    
+    public TestResults Calculate(TestAnswers testAnswers)
+    {
+        var propertyName = testAnswers.TestName.ToString();
+        var test = GetType().GetProperty(propertyName).GetValue(this);
+        var methodInfo = test.GetType().GetMethod("CalculateTest");
+        var result = methodInfo.Invoke(test, new object[] { testAnswers }) as TestResults;
+
+        return result;
+    }
 }
