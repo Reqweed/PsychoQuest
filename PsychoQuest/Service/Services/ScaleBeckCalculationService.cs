@@ -12,7 +12,7 @@ public class ScaleBeckCalculationService : IScaleBeckCalculationService
 
     public ScaleBeckCalculationService(IRepositoryManager repositoryManager) => _repositoryManager = repositoryManager;
 
-    public TestResults CalculateForScaleBeck(TestAnswers testAnswers)
+    public TestResults CalculateTest(TestAnswers testAnswers)
     {
         var testResult = new TestResults() { TestName = testAnswers.TestName, UserId = testAnswers.UserId };
         

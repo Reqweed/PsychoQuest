@@ -12,7 +12,7 @@ public class TestHallCalculationService : ITestHallCalculationService
 
     public TestHallCalculationService(IRepositoryManager repositoryManager) => _repositoryManager = repositoryManager;
 
-    public TestResults CalculateForTestHall(TestAnswers testAnswers)
+    public TestResults CalculateTest(TestAnswers testAnswers)
     {
         var testResult = new TestResults() { TestName = testAnswers.TestName, UserId = testAnswers.UserId };
         

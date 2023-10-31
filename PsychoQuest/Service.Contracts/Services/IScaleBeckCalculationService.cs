@@ -4,5 +4,5 @@ namespace Service.Contracts.Services;
 
 public interface IScaleBeckCalculationService
 {
-    TestResults CalculateForScaleBeck(TestAnswers testAnswers);
+    TestResults CalculateTest(TestAnswers testAnswers);
 }

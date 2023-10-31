@@ -36,13 +36,15 @@ public class SaveTestAnswersCommandHandler : IRequestHandler<SaveTestAnswersComm
 
             await _repositoryManager.TestAnswers.DeleteTestAnswersAsync(request.TestAnswers.UserId,request.TestAnswers.TestName);
         }
-            
+        
         var result = request.TestAnswers.TestName switch
         {
-            TypeTest.ScaleBeck => _serviceManager.ScaleBeck.CalculateForScaleBeck(request.TestAnswers),
-            TypeTest.TestHall => _serviceManager.TestHall.CalculateForTestHall(request.TestAnswers),
+            TypeTest.ScaleBeck => _serviceManager.ScaleBeck.CalculateTest(request.TestAnswers),
+            TypeTest.TestHall => _serviceManager.TestHall.CalculateTest(request.TestAnswers),
             _ => throw new TypeTestNotFoundException(request.TestAnswers.TestName)//add log
         };
+        
+        result = _serviceManager
         
         await _repositoryManager.TestAnswers.SaveTestAnswersAsync(request.TestAnswers);
         await _repositoryManager.TestResults.SaveTestResultsAsync(result);
