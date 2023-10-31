@@ -20,7 +20,7 @@ public class UsersController : BaseController
     }
     [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> GetUser()
+    public async Task<IActionResult> GetUser(CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:User Action:GetUser - User with id:{UserId} has begun");
         
@@ -29,7 +29,7 @@ public class UsersController : BaseController
             UserId = UserId
         };
         
-        var user = await Mediator.Send(getUserQuery);
+        var user = await Mediator.Send(getUserQuery, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:User Action:GetUser - User with id:{UserId} was finished");
         
@@ -38,7 +38,7 @@ public class UsersController : BaseController
 
     [Authorize(Roles = "Admin")]
     [HttpDelete]
-    public async Task<IActionResult> DeleteUser()
+    public async Task<IActionResult> DeleteUser(CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:User Action:DeleteUser - User with id:{UserId} has begun");
 
@@ -47,7 +47,7 @@ public class UsersController : BaseController
             UserId = UserId
         };
 
-        await Mediator.Send(deleteUserCommand);
+        await Mediator.Send(deleteUserCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:User Action:DeleteUser - User with id:{UserId} was finished");
 
@@ -56,11 +56,11 @@ public class UsersController : BaseController
     
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginQuery loginQuery)
+    public async Task<IActionResult> Login([FromBody] LoginQuery loginQuery, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:User Action:Login - User with id:{UserId} has begun");
 
-        var authResponse = await Mediator.Send(loginQuery);
+        var authResponse = await Mediator.Send(loginQuery, cancellationToken);
        
         LoggerManager.LogInfo($"Controller:User Action:Login - User with id:{UserId} was finished");
 
@@ -69,11 +69,11 @@ public class UsersController : BaseController
 
     [AllowAnonymous]
     [HttpPost("registration")]
-    public async Task<IActionResult> Registration([FromBody] RegistrationUserCommand registrationUserCommand)
+    public async Task<IActionResult> Registration([FromBody] RegistrationUserCommand registrationUserCommand, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:User Action:Registration - New user has begun");
 
-        var authResponse = await Mediator.Send(registrationUserCommand);
+        var authResponse = await Mediator.Send(registrationUserCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:User Action:Registration - New user with id:{UserId} was finished");
  
@@ -81,13 +81,13 @@ public class UsersController : BaseController
     }
     
     [HttpPost("refresh-token")]
-    public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenCommand refreshTokenCommand)
+    public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenCommand refreshTokenCommand, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:User Action:RefreshToken - User with id:{UserId} has begun");
 
         refreshTokenCommand.UserId = UserId;
         
-        var response = await Mediator.Send(refreshTokenCommand);
+        var response = await Mediator.Send(refreshTokenCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:User Action:RefreshToken - User with id:{UserId} was finished");
 
@@ -95,11 +95,11 @@ public class UsersController : BaseController
     }
 
     [HttpPut]
-    public async Task<ActionResult> UpdateUser([FromBody] UpdateUserCommand updateUserCommand)
+    public async Task<ActionResult> UpdateUser([FromBody] UpdateUserCommand updateUserCommand, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:User Action:UpdateUser - User with id:{UserId} has begun");
 
-        await Mediator.Send(updateUserCommand);
+        await Mediator.Send(updateUserCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:User Action:UpdateUser - User with id:{UserId} was finished");
 

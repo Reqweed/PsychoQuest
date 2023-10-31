@@ -21,7 +21,7 @@ public class RolesController : BaseController
     
     [Authorize(Roles = "Admin")]
     [HttpGet("{roleId:long}")]
-    public async Task<IActionResult> GetRoleForAdmin(long roleId)
+    public async Task<IActionResult> GetRoleForAdmin(long roleId, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Roles Action:GetRoleForAdmin - User with id:{UserId} has begun");
 
@@ -30,7 +30,7 @@ public class RolesController : BaseController
             RoleId = roleId
         };
 
-        var role = await Mediator.Send(getRoleForAdmin);
+        var role = await Mediator.Send(getRoleForAdmin, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Roles Action:GetRoleForAdmin - User with id:{UserId} was finished");
 
@@ -38,7 +38,7 @@ public class RolesController : BaseController
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetRole()
+    public async Task<IActionResult> GetRole(CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Roles Action:GetRole - User with id:{UserId} has begun");
 
@@ -47,7 +47,7 @@ public class RolesController : BaseController
             UserId = UserId
         };
 
-        var role = await Mediator.Send(getRoleQueries);
+        var role = await Mediator.Send(getRoleQueries, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Roles Action:GetRole - User with id:{UserId} was finished");
 
@@ -56,13 +56,13 @@ public class RolesController : BaseController
     
     [Authorize(Roles = "Admin")]
     [HttpGet("all")]
-    public async Task<IActionResult> GetAllRoles()
+    public async Task<IActionResult> GetAllRoles(CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Roles Action:GetAllRoles - User with id:{UserId} has begun");
 
         var getAllRolesQueries = new GetAllRolesQuery();
 
-        var roles = await Mediator.Send(getAllRolesQueries);
+        var roles = await Mediator.Send(getAllRolesQueries, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Roles Action:GetAllRoles - User with id:{UserId} was finished");
 
@@ -71,11 +71,11 @@ public class RolesController : BaseController
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommand createRoleCommand)
+    public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommand createRoleCommand, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Roles Action:CreateRole - User with id:{UserId} has begun");
 
-        await Mediator.Send(createRoleCommand);
+        await Mediator.Send(createRoleCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Roles Action:CreateRole - User with id:{UserId} was finished");
 
@@ -84,7 +84,7 @@ public class RolesController : BaseController
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{roleId}")]
-    public async Task<IActionResult> DeleteRole(long roleId)
+    public async Task<IActionResult> DeleteRole(long roleId, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Roles Action:DeleteRole - User with id:{UserId} has begun");
 
@@ -93,7 +93,7 @@ public class RolesController : BaseController
             RoleId = roleId
         };
 
-        await Mediator.Send(deleteRoleCommand);
+        await Mediator.Send(deleteRoleCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Roles Action:DeleteRole - User with id:{UserId} was finished");
 
@@ -102,7 +102,7 @@ public class RolesController : BaseController
     
     [Authorize(Roles = "Admin")]
     [HttpPost("set-role")]
-    public async Task<IActionResult> SetRole([FromBody] long roleId)
+    public async Task<IActionResult> SetRole([FromBody] long roleId, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Roles Action:SetRole - User with id:{UserId} has begun");
 
@@ -112,7 +112,7 @@ public class RolesController : BaseController
             RoleId = roleId
         };
 
-        await Mediator.Send(setRoleCommand);
+        await Mediator.Send(setRoleCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Roles Action:SetRole - User with id:{UserId} was finished");
 

@@ -17,7 +17,7 @@ public class QuestionsController : BaseController
     }
     
     [HttpGet("{typeTest:TypeTest}")]
-    public async Task<IActionResult> GetTestQuestions(TypeTest typeTest)
+    public async Task<IActionResult> GetTestQuestions(TypeTest typeTest, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Questions Action:GetTestQuestions - User with id:{UserId} has begun");
 
@@ -26,7 +26,7 @@ public class QuestionsController : BaseController
             TypeTest = typeTest
         };
 
-        var questions = await Mediator.Send(getTestQuestionsQuery);
+        var questions = await Mediator.Send(getTestQuestionsQuery, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Questions Action:GetTestQuestions - User with id:{UserId} was finished");
 

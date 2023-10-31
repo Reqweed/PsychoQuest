@@ -17,7 +17,7 @@ public class ResultsController : BaseController
     }
 
     [HttpGet("{typeTest:TypeTest}")]
-    public async Task<IActionResult> GetTestResults(TypeTest typeTest)
+    public async Task<IActionResult> GetTestResults(TypeTest typeTest, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Results Action:GetTestResults - User with id:{UserId} has begun");
 
@@ -27,7 +27,7 @@ public class ResultsController : BaseController
             TypeTest = typeTest
         };
 
-        var results = await Mediator.Send(getTestResultsQuery);
+        var results = await Mediator.Send(getTestResultsQuery, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Results Action:GetTestResults - User with id:{UserId} was finished");
 
@@ -35,7 +35,7 @@ public class ResultsController : BaseController
     }
 
     [HttpDelete("{typeTest:TypeTest}")]
-    public async Task<IActionResult> DeleteTestResults(TypeTest typeTest)
+    public async Task<IActionResult> DeleteTestResults(TypeTest typeTest, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Results Action:DeleteTestResults - User with id:{UserId} has begun");
 
@@ -45,7 +45,7 @@ public class ResultsController : BaseController
             TypeTest = typeTest
         };
 
-        await Mediator.Send(deleteTestResultsCommand);
+        await Mediator.Send(deleteTestResultsCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Results Action:DeleteTestResults - User with id:{UserId} was finished");
 

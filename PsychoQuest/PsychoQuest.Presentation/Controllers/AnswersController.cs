@@ -19,7 +19,7 @@ public class AnswersController : BaseController
     }
 
     [HttpGet("{typeTest:TypeTest}")]
-    public async Task<IActionResult> GetAnswers(TypeTest typeTest)
+    public async Task<IActionResult> GetAnswers(TypeTest typeTest, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Answers Action:GetAnswers - User with id:{UserId} has begun");
         
@@ -29,7 +29,7 @@ public class AnswersController : BaseController
             TypeTest = typeTest
         };
 
-        var answers = await Mediator.Send(getAnswersQuery);
+        var answers = await Mediator.Send(getAnswersQuery, cancellationToken);
         
         LoggerManager.LogInfo($"Controller:Answers Action:GetAnswers - User with id:{UserId} was finished");
         
@@ -37,7 +37,7 @@ public class AnswersController : BaseController
     }
     
     [HttpPost("{typeTest:TypeTest}")]
-    public async Task<IActionResult> SaveAnswers(TypeTest typeTest, [FromBody] TestAnswers answers)
+    public async Task<IActionResult> SaveAnswers(TypeTest typeTest, [FromBody] TestAnswers answers, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Answers Action:SaveAnswers - User with id:{UserId} has begun");
         
@@ -52,7 +52,7 @@ public class AnswersController : BaseController
             }
         };
 
-        await Mediator.Send(saveAnswersCommand);
+        await Mediator.Send(saveAnswersCommand, cancellationToken);
         
         LoggerManager.LogInfo($"Controller:Answers Action:SaveAnswers - User with id:{UserId} was finished");
         
@@ -60,7 +60,7 @@ public class AnswersController : BaseController
     }
 
     [HttpDelete("{typeTest:TypeTest}")]
-    public async Task<IActionResult> DeleteAnswers(TypeTest typeTest)
+    public async Task<IActionResult> DeleteAnswers(TypeTest typeTest, CancellationToken cancellationToken)
     {
         LoggerManager.LogInfo($"Controller:Answers Action:DeleteAnswers - User with id:{UserId} has begun");
         
@@ -70,7 +70,7 @@ public class AnswersController : BaseController
             TypeTest = typeTest
         };
 
-        await Mediator.Send(deleteAnswersCommand);
+        await Mediator.Send(deleteAnswersCommand, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:Answers Action:DeleteAnswers - User with id:{UserId} was finished");
         
