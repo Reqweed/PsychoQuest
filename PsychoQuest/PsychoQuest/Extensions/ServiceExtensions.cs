@@ -1,10 +1,13 @@
 ﻿using System.Text;
+using Application.Caches.Implementations;
+using Application.Caches.Interfaces;
 using Auth;
 using Auth.Implementations;
 using Auth.Interfaces;
 using Entities.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using PsychoQuest.Presentation.Constraints;
 using Repository.Contracts;
@@ -99,5 +102,12 @@ public static class ServiceExtensions
         
         await Initializer.InitializerRoleAsync(rolesManager);
         await Initializer.InitializerUserAsync(userManager);
+    }
+
+    public static void ConfigureCache(this IServiceCollection services)
+    {
+        services.AddResponseCaching();
+        services.AddSingleton<IMemoryCache, MemoryCache>();
+        services.AddScoped(typeof(ICacheManager<>), typeof(CacheManager<>));
     }
 }
