@@ -1,4 +1,6 @@
-﻿using Entities.Exceptions.NotFoundException;
+﻿using Application.Caches.Implementations;
+using Application.Caches.Interfaces;
+using Entities.Exceptions.NotFoundException;
 using Entities.Models;
 using MediatR;
 using Repository.Contracts;
@@ -9,11 +11,13 @@ public class GetTestResultsQueryHandler : IRequestHandler<GetTestResultsQuery,Te
 {
     private readonly IRepositoryManager _repositoryManager;
     private readonly ILoggerManager _loggerManager;
-
-    public GetTestResultsQueryHandler(IRepositoryManager repositoryManager, ILoggerManager loggerManager)
+    private readonly ICacheManager<TestResults> _cacheManager;
+    
+    public GetTestResultsQueryHandler(IRepositoryManager repositoryManager, ILoggerManager loggerManager, ICacheManager<TestResults> cacheManager)
     {
         _repositoryManager = repositoryManager;
         _loggerManager = loggerManager;
+        _cacheManager = cacheManager;
     }
 
     public async Task<TestResults> Handle(GetTestResultsQuery request, CancellationToken cancellationToken)
@@ -27,8 +31,11 @@ public class GetTestResultsQueryHandler : IRequestHandler<GetTestResultsQuery,Te
             throw new TestResultsNotFoundException(request.UserId, request.TypeTest);
         }
         
-        var results = await _repositoryManager.TestResults.GetTestResultsAsync(request.UserId, request.TypeTest, cancellationToken);
+        var resultsFunc = async() => await _repositoryManager.TestResults.GetTestResultsAsync(request.UserId, request.TypeTest, cancellationToken);
 
+        _cacheManager.CacheEntryOptions = CacheEntryOption.DefaultCacheEntry;
+        var results = await _cacheManager.GetOrSetCacheValue("results", resultsFunc);
+        
         _loggerManager.LogInfo($"Query:GetTestResultsQuery - User with id:{request.UserId} and Test:{request.TypeTest} was finished");
 
         return results;

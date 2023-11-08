@@ -1,4 +1,6 @@
-﻿using Entities.Exceptions.NotFoundException;
+﻿using Application.Caches.Implementations;
+using Application.Caches.Interfaces;
+using Entities.Exceptions.NotFoundException;
 using Entities.Models;
 using MediatR;
 using Repository.Contracts;
@@ -9,19 +11,23 @@ public class GetTestQuestionsQueryHandler : IRequestHandler<GetTestQuestionsQuer
 {
     private readonly IRepositoryManager _repositoryManager;
     private readonly ILoggerManager _loggerManager;
+    private readonly ICacheManager<TestQuestions> _cacheManager;
 
-    public GetTestQuestionsQueryHandler(IRepositoryManager repositoryManager, ILoggerManager loggerManager)
+    public GetTestQuestionsQueryHandler(IRepositoryManager repositoryManager, ILoggerManager loggerManager, ICacheManager<TestQuestions> cacheManager)
     {
         _repositoryManager = repositoryManager;
         _loggerManager = loggerManager;
+        _cacheManager = cacheManager;
     }
 
     public async Task<TestQuestions> Handle(GetTestQuestionsQuery request, CancellationToken cancellationToken)
     {
         _loggerManager.LogInfo($"Query:GetTestQuestionsQuery - Questions:{request.TypeTest} has begun");
 
-        var questions = await _repositoryManager.TestQuestions.GetTestQuestionsAsync(request.TypeTest, cancellationToken);
+        var questionsFunc = async() => await _repositoryManager.TestQuestions.GetTestQuestionsAsync(request.TypeTest, cancellationToken);
 
+        _cacheManager.CacheEntryOptions = CacheEntryOption.DefaultCacheEntry;
+        var questions = await _cacheManager.GetOrSetCacheValue("questions", questionsFunc);
         if (questions is null)
         {
             _loggerManager.LogWarn($"Query:GetTestQuestionsQuery - Questions:{request.TypeTest} doesn't exist");
