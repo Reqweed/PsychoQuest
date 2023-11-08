@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="12.1.1" />
+      <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
