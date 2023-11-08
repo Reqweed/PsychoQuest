@@ -18,7 +18,8 @@ public class UsersController : BaseController
     public UsersController(IMediator mediator, ILoggerManager loggerManager) : base(mediator, loggerManager)
     {
     }
-    [AllowAnonymous]
+    
+    [ResponseCache(CacheProfileName = "Cache")]
     [HttpGet]
     public async Task<IActionResult> GetUser(CancellationToken cancellationToken)
     {

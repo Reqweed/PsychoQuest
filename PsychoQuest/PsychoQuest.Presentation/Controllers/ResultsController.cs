@@ -16,6 +16,7 @@ public class ResultsController : BaseController
     {
     }
 
+    [ResponseCache(CacheProfileName = "Cache")]
     [HttpGet("{typeTest:TypeTest}")]
     public async Task<IActionResult> GetTestResults(TypeTest typeTest, CancellationToken cancellationToken)
     {

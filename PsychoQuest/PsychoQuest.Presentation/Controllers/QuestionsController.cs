@@ -16,6 +16,7 @@ public class QuestionsController : BaseController
     {
     }
     
+    [ResponseCache(CacheProfileName = "Cache")]
     [HttpGet("{typeTest:TypeTest}")]
     public async Task<IActionResult> GetTestQuestions(TypeTest typeTest, CancellationToken cancellationToken)
     {

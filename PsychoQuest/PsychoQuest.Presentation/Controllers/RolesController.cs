@@ -20,6 +20,7 @@ public class RolesController : BaseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ResponseCache(CacheProfileName = "Cache")]
     [HttpGet("{roleId:long}")]
     public async Task<IActionResult> GetRoleForAdmin(long roleId, CancellationToken cancellationToken)
     {
@@ -55,6 +56,7 @@ public class RolesController : BaseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ResponseCache(CacheProfileName = "Cache")]
     [HttpGet("all")]
     public async Task<IActionResult> GetAllRoles(CancellationToken cancellationToken)
     {
