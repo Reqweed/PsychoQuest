@@ -36,9 +36,6 @@ app.ConfigureExceptionHandler();
 
 app.UseResponseCaching();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
