@@ -10,6 +10,7 @@ builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureNlog();
 builder.Services.ConfigureMediatR();
 builder.Services.ConfigureCache();
+builder.Services.ConfigureMapper();
 
 builder.Services.AddAuth(builder.Configuration);
 

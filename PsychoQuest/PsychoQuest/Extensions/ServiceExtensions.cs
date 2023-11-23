@@ -105,6 +105,9 @@ public static class ServiceExtensions
         await Initializer.InitializerUserAsync(userManager);
     }
 
+    public static void ConfigureMapper(this IServiceCollection services) =>
+        services.AddAutoMapper(typeof(Program));
+    
     public static void ConfigureCache(this IServiceCollection services)
     {
         services.AddResponseCaching();
