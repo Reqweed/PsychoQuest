@@ -1,4 +1,5 @@
 ﻿using Application.CommandsQueries.User.Commands.DeleteUser;
+using Application.CommandsQueries.User.Queries.GetAllUsers;
 using Application.CommandsQueries.User.Queries.GetUser;
 using Auth.Commands.RefreshToken;
 using Auth.Commands.Registration;
@@ -33,6 +34,22 @@ public class UsersController : BaseController
         var user = await Mediator.Send(getUserQuery, cancellationToken);
 
         LoggerManager.LogInfo($"Controller:User Action:GetUser - User with id:{UserId} was finished");
+        
+        return Ok(user);
+    }
+    
+    [ResponseCache(CacheProfileName = "Cache")]
+    [Authorize(Roles = "Admin")]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllUser(CancellationToken cancellationToken)
+    {
+        LoggerManager.LogInfo($"Controller:User Action:GetAllUser - User with id:{UserId} has begun");
+
+        var getAllUserQuery = new GetAllUsersQuery();
+        
+        var user = await Mediator.Send(getAllUserQuery, cancellationToken);
+
+        LoggerManager.LogInfo($"Controller:User Action:GetAllUser - User with id:{UserId} was finished");
         
         return Ok(user);
     }
